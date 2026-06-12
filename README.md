@@ -1,213 +1,178 @@
 # 🎮 Terraria Mod Manager
 
-A command-line mod manager for Terraria tModLoader — safely scan, enable/disable, backup, and restore your mods without ever deleting them.
+An **in-game mod manager for tModLoader** — manage your mods, profiles, and backups without ever leaving Terraria.
+
+> **Also available: [CLI Version](https://github.com/langshiye123/Terraria-Mod-Manager/tree/master)** — external command-line tool for file-based mod management.
 
 ## ✨ Features
 
-- **🔍 Scan Mods** — Scan `.tmod` files and display file name, size, modification time, and enabled/disabled status
-- **📊 Dual Output** — Table format for readability or JSON for programmatic use
-- **✅ Enable/Disable** — Disable mods by moving them to `disabled_mods/` (never deleted), enable them by moving back
-- **💾 Backup** — Create timestamped backups of your current mod setup
-- **🔄 Restore** — Restore from any previous backup, with automatic safety backup before restoration
-- **📂 List Backups** — View all backups with creation time and mod count
-- **🛡️ Safe by Design** — Never deletes your mod files; disabled mods are preserved, restores create safety backups
-- **🌍 Cross-Platform** — Windows, Linux, and macOS support with automatic path detection
+- **📊 Mod Dashboard** — View all installed mods with name, version, author, and load status in a clean in-game panel
+- **💾 Mod Profiles** — Save your current enabled mods as named profiles; switch between mod sets for different playthroughs (e.g., "Vanilla+", "Calamity", "Thorium")
+- **🔄 Backup System** — One-click backup of your mod configuration (`enabled.json`), with world and player save tracking
+- **🛡️ Safe Restore** — Restore from any backup; a safety backup is automatically created before any restore operation
+- **⚙️ ModConfig** — Configure auto-backup, max backup count, and UI preferences via tModLoader's built-in settings
+- **💬 Chat Commands** — Quick actions via `/modmgr` commands in chat
+- **🌍 Localization Ready** — English localization included, expandable to other languages
 
-## 📋 System Requirements
+## 📋 Requirements
 
-- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or later
+- **tModLoader** (1.4.4+ recommended, .NET 8.0 runtime)
+- **Terraria** (Steam version)
+- Works on Windows, Linux, and macOS
 
-## 📦 Installation
+## 📥 Installation
 
-### Build from Source
+### Steam Workshop (Recommended)
 
-```bash
-git clone https://github.com/langshiye123/Terraria-Mod-Manager.git
-cd Terraria-Mod-Manager
-dotnet build -c Release
-```
+1. Subscribe to **Terraria Mod Manager** on the Steam Workshop
+2. Enable the mod in tModLoader's Mods menu
+3. Done!
 
-The compiled binary will be at:
-```
-src/TModManager/bin/Release/net8.0/TModManager.exe   (Windows)
-src/TModManager/bin/Release/net8.0/TModManager        (Linux/macOS)
-```
+### Manual Installation
 
-### Publish as Single File (Optional)
+1. Download the latest `.tmod` file from [GitHub Releases](https://github.com/langshiye123/Terraria-Mod-Manager/releases)
+2. Place it in your tModLoader Mods folder:
+   - **Windows**: `%USERPROFILE%\Documents\My Games\Terraria\tModLoader\Mods`
+   - **Linux**: `~/.local/share/Terraria/tModLoader/Mods`
+   - **macOS**: `~/Library/Application Support/Terraria/tModLoader/Mods`
+3. Enable the mod in tModLoader's Mods menu
 
-```bash
-dotnet publish src/TModManager -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o ./publish
-```
+## 🎮 Usage
 
-## 📖 Usage
+### In-Game Dashboard
 
-### Scan Mods
+The Mod Manager dashboard is accessible in two ways:
 
-```bash
-# Table format (default)
-TModManager scan
+1. **Chat Command**: Type `/modmgr` in chat to open the management panel
+2. **Config Menu**: Access settings via tModLoader's Settings → Mod Configuration → Terraria Mod Manager
 
-# JSON format
-TModManager scan --format json
+### Dashboard Tabs
 
-# Specify custom Mods directory
-TModManager scan --path "D:\Terraria\tModLoader\Mods"
-```
+| Tab | What You Can Do |
+|-----|-----------------|
+| **Mod Dashboard** | Browse all installed mods with version, author, and load status |
+| **Profiles** | Save current mods as a named profile, load saved profiles, compare differences |
+| **Backups** | Create backups, view backup history, restore from previous backup |
 
-**Example output (table):**
-```
-Status   File Name                                  Size         Last Modified
-----------------------------------------------------------------------------------
-Enabled  CalamityMod.tmod                           45.2 MB      2026-05-15 14:30:22
-Enabled  ThoriumMod.tmod                            18.7 MB      2026-05-10 09:15:00
-Disabled RecipeBrowser.tmod                         2.1 MB       2026-04-20 11:00:00
-----------------------------------------------------------------------------------
-Total: 3 mods (Enabled: 2, Disabled: 1)
-```
-
-### Enable / Disable Mods
-
-```bash
-# Disable a mod (moved to disabled_mods/)
-TModManager disable ExampleMod.tmod
-
-# Enable a mod (moved back to Mods/)
-TModManager enable ExampleMod.tmod
-
-# With custom path
-TModManager disable ExampleMod.tmod --path "/home/user/tModLoader/Mods"
-```
-
-### Backup
-
-```bash
-# Create a backup of current mods
-TModManager backup
-
-# List all backups
-TModManager list-backups
-```
-
-### Restore
-
-```bash
-# Restore from a backup (interactive confirmation required)
-TModManager restore 2026-06-12_14-30-00
-```
-
-> ⚠️ **Restore will**:
-> 1. Create a safety backup of your current mods (`pre_restore_*`)
-> 2. Replace current mods with the backup contents
-> 3. Ask for confirmation before proceeding
-
-## 📁 tModLoader Mods Directory
-
-The tool automatically detects your Mods folder. Detection order:
-
-| Priority | Source | Description |
-|----------|--------|-------------|
-| 1 | `--path` argument | Explicitly specified path |
-| 2 | `TMOD_MODS_PATH` env var | Environment variable |
-| 3 | OS default path | Platform-specific default |
-
-### Default Paths by OS
-
-| OS | Default Mods Path |
-|----|-------------------|
-| **Windows** | `%USERPROFILE%\Documents\My Games\Terraria\tModLoader\Mods` |
-| **Linux** | `~/.local/share/Terraria/tModLoader/Mods` |
-| **macOS** | `~/Library/Application Support/Terraria/tModLoader/Mods` |
-
-### Directory Structure After Using TModManager
+### Chat Commands
 
 ```
-Mods/
-├── CalamityMod.tmod          # Enabled mods
-├── ThoriumMod.tmod
-├── disabled_mods/            # Disabled mods (preserved, not deleted)
-│   └── OldMod.tmod
-└── backups/                  # Backup snapshots
+/mmodmgr                    # Open the management dashboard
+/modmgr backup              # Create a quick backup
+/modmgr list-backups        # List all backups
+/modmgr save-profile <name> # Save current mods as a profile
+/modmgr list-profiles       # List all saved profiles
+/modmgr help                # Show available commands
+```
+
+### Mod Profiles Workflow
+
+1. Set up your mods for a specific playthrough (e.g., enable Calamity + its dependencies)
+2. Type `/modmgr save-profile CalamityPlaythrough`
+3. Later, when you want to switch: load the profile, compare differences, adjust mods in the Mods menu, and reload
+
+## 📁 File Structure
+
+All mod data is stored in `ModLoader/Mods/TerrariaModManager/`:
+
+```
+TerrariaModManager/
+├── profiles/                  # Mod profiles (JSON files)
+│   ├── CalamityPlaythrough.json
+│   └── VanillaPlus.json
+└── backups/                   # Backup snapshots
     ├── 2026-06-12_14-30-00/
-    │   ├── CalamityMod.tmod
-    │   └── ThoriumMod.tmod
-    └── pre_restore_2026-06-12_15-00-00/
-        └── CalamityMod.tmod
+    │   ├── enabled_mods.json      # Enabled mods list
+    │   ├── mod_config_enabled.json # tModLoader mod config
+    │   └── save_info.json          # World/player file manifest
+    └── pre_restore_2026-06-12_15-00-00/  # Safety backup
 ```
 
 ## 🛡️ Safety Guarantees
 
-**TModManager never deletes your mod files.**
+| Operation | What Happens |
+|-----------|-------------|
+| **Backup** | Copies mod config and save manifests — originals untouched |
+| **Restore** | Creates a `pre_restore_*` safety backup first, then applies changes |
+| **Profile Load** | Shows differences only — never auto-enables/disables mods without your review |
+| **Profile Delete** | Only removes the JSON profile file — your mods are never affected |
 
-| Operation | What Actually Happens |
-|-----------|----------------------|
-| **Disable** | File is **moved** to `disabled_mods/` — not deleted |
-| **Enable** | File is **moved** back to Mods directory |
-| **Restore** | A **safety backup** is created before overwriting anything |
-| **Backup** | Files are **copied** — originals untouched |
-
-- No destructive operations exist in this tool
-- Overwrite protection: operations abort if a file already exists at the target location
-- Interactive confirmation required before restore
+**Terraria Mod Manager never deletes your mods, worlds, or players.**
 
 ## 🔧 Developer Guide
 
-### Build
+### Building from Source
 
 ```bash
-dotnet build
+git clone https://github.com/langshiye123/Terraria-Mod-Manager.git
+cd Terraria-Mod-Manager
+git checkout tmodloader-mod
 ```
 
-### Run Tests
+#### Method 1: tModLoader Built-in (Recommended)
+1. Launch tModLoader → Workshop → Develop Mods
+2. Open the cloned folder as a mod source
+3. Click "Build + Reload"
 
-```bash
-dotnet test
-```
-
-Tests use temporary directories (`Path.GetTempPath()`) — **no real Terraria installation required**.
+#### Method 2: Manual Build
+1. Ensure you have .NET 8.0 SDK installed
+2. Adjust the `TerrariaModManager.csproj` to reference your tModLoader installation
+3. Run `dotnet build`
+4. Use tModLoader's mod packaging tool to create the `.tmod`
 
 ### Project Structure
 
 ```
-Terraria-Mod-Manager/
-├── TModManager.sln
-├── src/
-│   └── TModManager/
-│       ├── Program.cs              # CLI entry point & argument parsing
-│       ├── Models/
-│       │   ├── ModInfo.cs          # Mod metadata record
-│       │   └── BackupInfo.cs       # Backup metadata record
-│       └── Services/
-│           ├── PathService.cs      # Path detection & resolution
-│           ├── ScanService.cs      # .tmod file scanning
-│           ├── ModEnabler.cs       # Enable/disable operations
-│           └── BackupService.cs    # Backup/restore operations
-└── tests/
-    └── TModManager.Tests/
-        ├── TempDirectory.cs        # Test utility for temp directories
-        ├── ScanServiceTests.cs     # Scan tests (10 tests)
-        ├── ModEnablerTests.cs      # Enable/disable tests (8 tests)
-        └── BackupServiceTests.cs   # Backup/restore tests (9 tests)
+Terraria-Mod-Manager/              (tmodloader-mod branch)
+├── build.txt                      # Mod metadata
+├── description.txt                # Mod description
+├── TerrariaModManager.csproj      # Project file
+├── ModManagerMod.cs               # Main Mod class
+├── Common/
+│   ├── Configs/
+│   │   └── ModManagerConfig.cs    # ModConfig settings
+│   └── Systems/
+│       ├── ModManagerSystem.cs    # UI lifecycle & rendering
+│       └── ChatCommandSystem.cs   # /modmgr chat commands
+├── Core/
+│   ├── ModInfoHelper.cs           # Mod info retrieval via tML API
+│   ├── ProfileManager.cs          # Mod profile CRUD
+│   └── BackupManager.cs           # Backup/restore logic
+├── UI/
+│   ├── ModDashboardUI.cs          # Main UI state with tabs
+│   ├── DashboardPanel.cs          # Mod list panel
+│   ├── ProfilePanel.cs            # Profile management panel
+│   └── BackupPanel.cs             # Backup management panel
+└── Localization/
+    └── en-US.hjson                # English localization
 ```
 
 ### Tech Stack
-
 - **Language**: C# 12
-- **Runtime**: .NET 8.0
-- **Test Framework**: xUnit
-- **Dependencies**: None (zero external packages beyond .NET BCL)
+- **Framework**: tModLoader (targets .NET 8.0)
+- **UI**: tModLoader UI system (UIState, UIElement, UIPanel)
+- **Data**: JSON for profiles and backups
+- **Configuration**: tModLoader ModConfig
 
 ## 🗺️ Roadmap
 
-- [ ] `install` command — download mods from Steam Workshop / tModLoader Mod Browser
-- [ ] `update` command — check and update installed mods
-- [ ] Configuration profiles — switch between mod sets for different playthroughs
-- [ ] GUI frontend (WPF or Avalonia)
-- [ ] Mod dependency resolution
-- [ ] One-click Terraria launch with selected mods
+- [ ] Full world/player save backup (currently manifest-only)
+- [ ] Auto-backup on mod reload
+- [ ] Mod dependency resolution in profiles
+- [ ] Profile sharing via Steam Workshop
+- [ ] Mod update notifications
+- [ ] Additional language translations (zh-CN, ru, pt-BR)
+
+## 🔗 Links
+
+- **CLI Version** (standalone tool): [master branch](https://github.com/langshiye123/Terraria-Mod-Manager/tree/master)
+- **Release v1.0.0** (CLI, Win64): [Download](https://github.com/langshiye123/Terraria-Mod-Manager/releases/tag/v1.0.0)
+- **ExampleMod Reference**: [tModLoader/ExampleMod](https://github.com/tModLoader/tModLoader/tree/stable/ExampleMod)
+- **tModLoader Modding Guide**: [Basic tModLoader Modding Guide](https://github.com/tModLoader/tModLoader/wiki/Basic-tModLoader-Modding-Guide)
 
 ## 📄 License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+MIT License — see [LICENSE](LICENSE) file.
 
 ---
 

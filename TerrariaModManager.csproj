@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>TerrariaModManager</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- tModLoader build targets - adjust path to match your tModLoader installation -->
+  <!-- For Steam installations, the path is typically:
+       C:/Program Files (x86)/Steam/steamapps/common/tModLoader/tModLoader.targets -->
+  <Import Project="..\tModLoader.targets" Condition="Exists('..\tModLoader.targets')" />
+
+  <!-- Fallback: Reference tModLoader DLLs directly if targets file not found -->
+  <ItemGroup Condition="!Exists('..\tModLoader.targets')">
+    <Reference Include="Terraria">
+      <HintPath>..\tModLoader\Terraria.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="tModLoader">
+      <HintPath>..\tModLoader\tModLoader.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="ReLogic">
+      <HintPath>..\tModLoader\ReLogic.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Steamworks.NET">
+      <HintPath>..\tModLoader\Steamworks.NET.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+</Project>

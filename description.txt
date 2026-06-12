@@ -1,0 +1,9 @@
+Terraria Mod Manager - In-game mod management dashboard, backup/restore system, and mod profile manager for tModLoader. Safely manage your mods without ever leaving the game.
+
+Features:
+- Mod Dashboard: View all installed mods with details
+- Mod Profiles: Save and switch between mod configurations for different playthroughs
+- Backup System: Backup and restore mod configs, worlds, and players
+- Never deletes your data: All operations create safety backups
+
+Press the "Mod Manager" button in the main menu or use /modmgr chat command in-game.

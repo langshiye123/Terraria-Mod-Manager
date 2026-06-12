@@ -1,0 +1,26 @@
+Mods: {
+	TerrariaModManager: {
+		Config: {
+			Header: {
+				General: "General"
+				UI: "User Interface"
+			}
+			AutoBackup: {
+				Label: "Auto-backup on world load"
+				Tooltip: "Automatically create a backup when loading a world"
+			}
+			MaxBackups: {
+				Label: "Max backup count"
+				Tooltip: "Maximum number of backups to keep (oldest are removed)"
+			}
+			ShowModCount: {
+				Label: "Show mod count on menu"
+				Tooltip: "Display the number of loaded mods on the main menu"
+			}
+			ConfirmRestore: {
+				Label: "Confirm before restore"
+				Tooltip: "Ask for confirmation before restoring from a backup"
+			}
+		}
+	}
+}

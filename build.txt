@@ -1,0 +1,6 @@
+displayName = Terraria Mod Manager
+author = langshiye123
+version = 1.1.0
+homepage = https://github.com/langshiye123/Terraria-Mod-Manager
+includeSource = true
+buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*, publish\*, src\*, tests\*, TModManager.sln
